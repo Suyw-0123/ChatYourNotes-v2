@@ -1,11 +1,14 @@
-# Docker 相關文件
-Dockerfile
-docker-compose.yml
-docker-compose.override.yml
-.dockerignore
+# Node artifacts
+frontend/node_modules
+frontend/dist
 
-# 容器運行時文件
-.docker/
+# Python artifacts
+backend/__pycache__
+backend/.pytest_cache
 
-# Docker volumes 和 networks
-docker_volumes/
+# Virtual environments
+.venv
+.python-version
+
+# Editor folders
+.vscode

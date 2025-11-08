@@ -1,47 +1,49 @@
-version: '3.8'
+version: "3.9"
 
 services:
-  # 主應用服務
-  chatyournotes:
-    build: .
-    ports:
-      - "5000:5000"
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
     environment:
-      - FLASK_ENV=production
-      - LLM_PROVIDER=gemini
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - GEMINI_MODEL=models/gemini-1.5-flash-latest
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: chatyournotes
+      MYSQL_USER: chat_user
+      MYSQL_PASSWORD: chat_password
+    ports:
+      - "3306:3306"
     volumes:
-      # 掛載資料目錄，確保資料持久化
-      - ./data:/app/data
-      # 掛載 .env 檔案
-      - ./.env:/app/src/.env
-    restart: unless-stopped
+      - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    
-  # 可選：加入 Redis 作為快取服務
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
-    volumes:
-      - redis_data:/data
-    
-  # 可選：加入 Nginx 作為反向代理
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - backend/.env
     depends_on:
-      - chatyournotes
-    restart: unless-stopped
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    command: python main.py
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_BASE: "http://localhost:8000"
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
 
 volumes:
-  redis_data:
+  db_data:
