@@ -130,5 +130,4 @@ npm run dev      # 開啟 Vite 開發伺服器（預設 http://localhost:5173）
 
 ---
 
-以上文件確保新成員依 README 操作即可啟動整套系統並進行文件上傳／問答測試。如有更多需求，可在 `todo.md` 添加後續工作項目。
-2. Add pytest + requests integration tests
+
