@@ -58,6 +58,10 @@ ChatYourNotes/
 - Python 3.11（若使用 uv）
 - Google Gemini API Key（寫入 `backend/.env`）
 
+## Google Gemini API Key
+
+- 在Google AI Studio 網站裡面點擊左邊欄位的 API Key 選項，選擇 Create Api Key 就能取得 API 密鑰
+
 ## 快速啟動（Docker Compose）
 
 1. 建立後端環境檔：
