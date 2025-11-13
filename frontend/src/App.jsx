@@ -154,7 +154,6 @@ export default function App() {
       <header className="app-header">
         <div>
           <h1>ChatYourNotes</h1>
-          <p className="subtitle">依據流程圖打造的 PDF 知識助理</p>
         </div>
       </header>
 
